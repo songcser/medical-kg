@@ -1,0 +1,11 @@
+/.settings
+/.idea
+*.pyc
+*.lprof
+/.project
+/.pydevproject
+*.DS_Store
+/.venv
+/.vscode
+*.pid
+db

@@ -76,5 +76,8 @@ def import_doctor(doc_type):
 
 
 if __name__ == "__main__":
-    import_hospital('guahaowang')
-    import_doctor('guahaowang')
+    docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
+            'guahaowang']
+    for doc in docs:
+        import_hospital(doc)
+        import_doctor(doc)
