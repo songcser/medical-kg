@@ -7,7 +7,7 @@ services:
       - "${PWD}/service:/service"
     links:
       - neo4j
-    command: ['python3', 'handler.py']
+    # command: ['python3', 'handler.py']
     networks:
       - neo4j-network
   
