@@ -48,7 +48,7 @@ class Hospital(StructuredNode):
     telephone = StringProperty()
     longitude = FloatProperty()
     latitude = FloatProperty()
-    aimilarity = RelationShipTo(Hospital, "HOSPITALSIMILARITY",
+    aimilarity = RelationshipTo('Hospital', "HOSPITALSIMILARITY",
                                 model=HospitalSimilarity)
 
 class HosDocRel(StructuredRel):
