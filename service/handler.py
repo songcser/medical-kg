@@ -56,7 +56,8 @@ def import_doctor(doc_type):
             province = data.get('province', None),
             city = data.get('city', None),
             sex = data.get('sex', None),
-            description = ''.join(description.split()) if description else None,
+            description = ''.join(description.split()) if description and \
+                isinstance(description, str) else None,
             title = data.get('title', None),
             sourceUrl = data.get('source_url', None),
             sourceType = data.get('document_type'),
