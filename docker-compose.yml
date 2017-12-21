@@ -1,0 +1,28 @@
+version: '3'
+services:
+  service:
+    build:
+      context: service
+    volumes:
+      - "${PWD}/service:/service"
+    links:
+      - neo4j
+    command: ['python3', 'handler.py']
+    networks:
+      - neo4j-network
+  
+  neo4j:
+    image: "neo4j:3.0"
+    volumes:
+      - "${PWD}/db/data:/data"
+      - "${PWD}/db/logs:/logs"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - neo4j-network
+    #command: ["python", "-m", 'sanic', "service.server.app", "--workers=4", "--port=8000", "--host=0.0.0.0"]
+
+networks:
+  neo4j-network:
+    driver: bridge
