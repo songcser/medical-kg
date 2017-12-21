@@ -4,6 +4,7 @@ from model import Hospital, Doctor
 
 client = Elasticsearch('192.168.2.20:9200')
 
+
 def import_hospital(doc_type):
     s = Search(using=client, index="hospital-*")
     s = s.query('match', document_type=doc_type)
@@ -38,6 +39,7 @@ def import_hospital(doc_type):
             telephone=data.get('telephone', None),
         ).save()
 
+
 def import_doctor(doc_type):
     s = Search(using=client, index="doctor-*")
     s = s.query('match', document_type=doc_type)
@@ -49,19 +51,19 @@ def import_doctor(doc_type):
         data = hit.to_dict()
         goodat = data.get('goodat', None)
         description = data.get('description', None)
+        sex = data.get('sex', None),
         d = Doctor(
             did=data['document_id'],
             name=data['name'],
             goodat="".join(goodat.split()) if goodat else None,
-            province = data.get('province', None),
-            city = data.get('city', None),
-            sex = data.get('sex', None),
-            description = ''.join(description.split()) if description and \
-                isinstance(description, str) else None,
-            title = data.get('title', None),
-            sourceUrl = data.get('source_url', None),
-            sourceType = data.get('document_type'),
-            headerUrl = data.get('headerUrl', None),
+            province=data.get('province', None),
+            sex=''.join(sex.split()) if sex and isinstance(sex, str) else None,
+            city=data.get('city', None),
+            description=''.join(description.split()) if description and isinstance(description, str) else None,
+            title=data.get('title', None),
+            sourceUrl=data.get('source_url', None),
+            sourceType=data.get('document_type'),
+            headerUrl=data.get('headerUrl', None),
         ).save()
         hs = data.get('hospitals', [])
         deps = []
