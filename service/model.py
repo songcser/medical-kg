@@ -1,9 +1,20 @@
 from neomodel import config
 from neomodel import (config, StructuredNode, StringProperty, IntegerProperty,
     UniqueIdProperty, RelationshipTo, RelationshipFrom, FloatProperty,
-                      StructuredRel, ArrayProperty)
+                      StructuredRel, ArrayProperty, Relationship)
 
 config.DATABASE_URL = 'bolt://neo4j:admin@neo4j:7687'
+
+class Province(StructuredNode):
+    name = StringProperty(unique_index=True)
+
+class City(StructuredNode):
+    name = StringProperty(unique_index=True)
+    province = RelationshipTo(Province, "CityProvinceRel")
+
+class District(StructuredNode):
+    name = StringProperty(unique_index=True)
+    city = RelationshipTo(City, "DistrictCityRel")
 
 class HospitalSimilarity(StructuredRel):
     similarity = FloatProperty()
@@ -33,9 +44,9 @@ class Hospital(StructuredNode):
     managementMode = StringProperty()
     sourceUrl = StringProperty()
     sourceType = StringProperty(choices=SOURCETYPE)
-    province = StringProperty()
-    city = StringProperty()
-    district = StringProperty()
+    province = RelationshipTo(Province, "HosptialProvinceRel")
+    city = RelationshipTo(City, "HospitalCityRel")
+    district = RelationshipTo(District, "HospitalDistrictRel")
     street = StringProperty()
     place = StringProperty()
     email = StringProperty()
@@ -48,8 +59,12 @@ class Hospital(StructuredNode):
     telephone = StringProperty()
     longitude = FloatProperty()
     latitude = FloatProperty()
-    aimilarity = RelationshipTo('Hospital', "HOSPITALSIMILARITY",
+    aimilarity = RelationshipTo('Hospital', "HospitalAimilarity",
                                 model=HospitalSimilarity)
+    departments = Relationship('Department', "HospitalDepartmentRel")
+
+class Department(StructuredNode):
+    name = StringProperty()
 
 class HosDocRel(StructuredRel):
     department = StringProperty()
@@ -62,8 +77,8 @@ class Doctor(StructuredNode):
     did = UniqueIdProperty()
     name = StringProperty()
     goodat = StringProperty()
-    province = StringProperty()
-    city = StringProperty()
+    province = RelationshipTo(Province, "DoctorProvinceRel")
+    city = RelationshipTo(City, "DoctorCityRel")
     sex = StringProperty()
     description = StringProperty()
     title = StringProperty()
@@ -71,4 +86,4 @@ class Doctor(StructuredNode):
     sourceType = StringProperty()
     headerUrl = StringProperty()
     department = ArrayProperty()
-    hospital = RelationshipTo(Hospital, 'WORKIN', model=HosDocRel)
+    hospital = RelationshipTo(Hospital, 'WorkIn', model=HosDocRel)

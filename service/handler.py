@@ -1,20 +1,61 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
-from model import Hospital, Doctor
+from model import Hospital, Doctor, Province, City, District, \
+    HospitalSimilarity, Department, HosDocRel, DoctorSimilarity
 
 client = Elasticsearch('192.168.2.20:9200')
 
+
+def get_province(province):
+    if not province:
+        return None
+    p = Province.nodes.get_or_none(name=province)
+    if not p:
+        p = Province(name=province).save()
+    return p
+
+def get_city(city, province):
+    if not city:
+        return None
+    c = City.nodes.get_or_none(name=city)
+    if not c:
+        c = City(name=city).save()
+        if province:
+            c.province.connect(province)
+    return c
+
+def get_district(district, city):
+    if not district:
+        return None
+    d = District.nodes.get_or_none(name=district)
+    if not d:
+        d = District(name=district).save()
+        if city:
+            d.city.connect(city)
+    return d
+
+def get_department(dep):
+    if not dep:
+        return None
+    d = Department.nodes.get_or_none(name=dep)
+    if not d:
+        d = Department(name=dep).save()
+    return d
 
 def import_hospital(doc_type):
     s = Search(using=client, index="hospital-*")
     s = s.query('match', document_type=doc_type)
     i = 0
     for hit in s.scan():
+        break
         i += 1
         print("%s--%s--%s" % (doc_type, i, hit.hospitalName))
         h = Hospital.nodes.get_or_none(hid=hit.document_id)
         if h: continue
         data = hit.to_dict()
+        province = get_province(data.get('province', None))
+        city = get_city(data.get('city', None), province)
+        district = get_district(data.get('district', None), city)
         h = Hospital(
             hid=data['document_id'],
             name=data['hospitalName'],
@@ -23,9 +64,9 @@ def import_hospital(doc_type):
             managementMode=data.get('managementMode', None),
             sourceUrl=data.get('source_url', None),
             sourceType=data.get('document_type', None),
-            province=data.get('province', None),
-            city=data.get('city', None),
-            district=data.get('district', None),
+            #  province=data.get('province', None),
+            #  city=data.get('city', None),
+            #  district=data.get('district', None),
             street=data.get('street', None),
             place=data.get('place', None),
             email=data.get('email', None),
@@ -37,13 +78,34 @@ def import_hospital(doc_type):
             medicalInsurance=data.get('medicalInsurance', None),
             telephone=data.get('telephone', None),
         ).save()
+        if province:
+            h.province.connect(province)
+        if city:
+            h.city.connect(city)
+        if district:
+            h.district.connect(district)
+        depClass = data.get('departmentClass', None)
+        if not depClass:
+            continue
+        for deplist in depClass:
+            deps = deplist.get('departments', None)
+            if not deps:
+                continue
+            for dep in deps:
+                d = get_department(dep)
+                if not d:
+                    continue
+                h.departments.relationship(d)
+
 
 
 def import_doctor(doc_type):
     s = Search(using=client, index="doctor-*")
     s = s.query('match', document_type=doc_type)
 #  hits = s.execute()
+    i = 0
     for hit in s.scan():
+        i += 1
         print("%s--%s--%s" % (doc_type, i, hit.name))
         d = Doctor.nodes.get_or_none(did=hit.document_id)
         if d: continue
@@ -78,9 +140,9 @@ def import_doctor(doc_type):
 
 
 if __name__ == "__main__":
-    docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
-            'guahaowang']
+    #  docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
+    #          'guahaowang']
+    docs = ['cnkang']
     for doc in docs:
-        print("Import: %s" % doc)
         import_hospital(doc)
         import_doctor(doc)
