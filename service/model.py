@@ -59,7 +59,7 @@ class Hospital(StructuredNode):
     telephone = StringProperty()
     longitude = FloatProperty()
     latitude = FloatProperty()
-    aimilarity = RelationshipTo('Hospital', "HospitalAimilarity",
+    aimilarity = Relationship('Hospital', "HospitalAimilarity",
                                 model=HospitalSimilarity)
     departments = Relationship('Department', "HospitalDepartmentRel")
 
@@ -85,5 +85,5 @@ class Doctor(StructuredNode):
     sourceUrl = StringProperty()
     sourceType = StringProperty()
     headerUrl = StringProperty()
-    department = ArrayProperty()
-    hospital = RelationshipTo(Hospital, 'WorkIn', model=HosDocRel)
+    department = RelationshipTo(Department, "WorkInDepartment")
+    hospital = RelationshipTo(Hospital, 'WorkInHospital', model=HosDocRel)

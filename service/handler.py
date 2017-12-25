@@ -22,6 +22,7 @@ def get_city(city, province):
         c = City(name=city).save()
         if province:
             c.province.connect(province)
+    c.save()
     return c
 
 def get_district(district, city):
@@ -32,6 +33,7 @@ def get_district(district, city):
         d = District(name=district).save()
         if city:
             d.city.connect(city)
+    d.save()
     return d
 
 def get_department(dep):
@@ -47,7 +49,6 @@ def import_hospital(doc_type):
     s = s.query('match', document_type=doc_type)
     i = 0
     for hit in s.scan():
-        break
         i += 1
         print("%s--%s--%s" % (doc_type, i, hit.hospitalName))
         h = Hospital.nodes.get_or_none(hid=hit.document_id)
@@ -96,7 +97,7 @@ def import_hospital(doc_type):
                 if not d:
                     continue
                 h.departments.relationship(d)
-
+        h.save()
 
 
 def import_doctor(doc_type):
@@ -135,7 +136,15 @@ def import_doctor(doc_type):
                 d.hospital.connect(hos, {
                     'department': ','.join(h['departments'])
                 })
-        d.department = deps
+        if deps:
+            department = get_department(deps[0])
+            d.department.connect(department)
+        province = get_province(data.get('province', None))
+        city = get_city(data.get('city', None), province)
+        if province:
+            d.province.connect(province)
+        if city:
+            d.city.connect(city)
         d.save()
 
 
