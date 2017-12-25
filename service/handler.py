@@ -93,7 +93,7 @@ def import_hospital(doc_type):
             if not deps:
                 continue
             for dep in deps:
-                d = get_department(dep)
+                d = get_department(dep['name'])
                 if not d:
                     continue
                 h.departments.relationship(d)
