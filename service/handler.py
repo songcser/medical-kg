@@ -136,7 +136,8 @@ def import_doctor(doc_type):
                 })
         if deps:
             department = get_department(deps[0])
-            d.department.connect(department)
+            if department:
+                d.department.connect(department)
         province = get_province(data.get('province', None))
         city = get_city(data.get('city', None), province)
         if province:
