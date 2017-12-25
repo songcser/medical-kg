@@ -149,9 +149,9 @@ def import_doctor(doc_type):
 
 
 if __name__ == "__main__":
-    #  docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
-    #          'guahaowang']
-    docs = ['cnkang']
+    docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
+            'guahaowang']
+    #  docs = ['cnkang']
     for doc in docs:
         import_hospital(doc)
         import_doctor(doc)
