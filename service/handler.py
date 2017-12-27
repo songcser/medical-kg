@@ -1,3 +1,4 @@
+import click
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from model import Hospital, Doctor, Province, City, District, \
@@ -5,6 +6,8 @@ from model import Hospital, Doctor, Province, City, District, \
 
 client = Elasticsearch('192.168.2.20:9200')
 
+docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
+        'guahaowang']
 
 def get_province(province):
     if not province:
@@ -44,7 +47,13 @@ def get_department(dep):
         d = Department(name=dep).save()
     return d
 
-def import_hospital(doc_type):
+@click.group()
+def clis():
+    pass
+
+@click.command()
+@click.option('--doc_type', '-d', type=click.Choice(docs))
+def hospital(doc_type):
     s = Search(using=client, index="hospital-*")
     s = s.query('match', document_type=doc_type)
     i = 0
@@ -100,7 +109,9 @@ def import_hospital(doc_type):
         h.save()
 
 
-def import_doctor(doc_type):
+@click.command()
+@click.option('--doc_type', '-d', type=click.Choice(docs))
+def doctor(doc_type):
     s = Search(using=client, index="doctor-*")
     s = s.query('match', document_type=doc_type)
 #  hits = s.execute()
@@ -146,11 +157,12 @@ def import_doctor(doc_type):
             d.city.connect(city)
         d.save()
 
+clis.add_command(hospital)
+clis.add_command(doctor)
 
 if __name__ == "__main__":
-    docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
-            'guahaowang']
     #  docs = ['cnkang']
-    for doc in docs:
-        import_hospital(doc)
-        import_doctor(doc)
+    #  for doc in docs:
+    #      hospital(doc)
+    #      doctor(doc)
+    clis()
