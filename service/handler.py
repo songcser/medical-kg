@@ -55,12 +55,12 @@ def clis():
 @click.command()
 @click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
 def hospital(doc_types):
-    start, end, i, err = 0, 500, 0, 0
+    start, limit, i, err = 0, 500, 0, 0
     for doc_type in doc_types:
         while True:
             try:
                 s = Search(using=client, index="hospital-%s" % doc_type).sort()
-                s = s[start:end]
+                s = s[start:start+limit]
                 res = s.execute()
                 if s.count() == 0:
                     break
@@ -115,8 +115,7 @@ def hospital(doc_types):
                             h.departments.connect(d)
                     h.save()
                     del data
-                start += end
-                end += end
+                start += limit
             except Exception as e:
                 print(e)
                 err += 1
@@ -127,12 +126,12 @@ def hospital(doc_types):
 @click.command()
 @click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
 def doctor(doc_types):
-    start, end, i, err = 0, 500, 0, 0
+    start, limit, i, err = 0, 500, 0, 0
     for doc_type in doc_types:
         while True:
             try:
                 s = Search(using=client, index="doctor-%s" % doc_type).sort()
-                s = s[start:end]
+                s = s[start:start+limit]
                 res = s.execute()
                 if s.count() == 0:
                     break
@@ -177,8 +176,7 @@ def doctor(doc_types):
                         d.city.connect(city)
                     d.save()
                     del data
-                start += end
-                end += end
+                start += limit
             except Exception as e:
                 print(e)
                 err += 1
