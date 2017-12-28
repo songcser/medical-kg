@@ -116,7 +116,7 @@ def doctor(doc_type):
     s = Search(using=client, index="doctor-*")
     s = s.query('match', document_type=doc_type)
     i = 0
-    s.params(size=500, raise_on_error=False)
+    s.params(size=500, raise_on_error=False, scroll=u'60m')
     for hit in s.scan():
         i += 1
         print("%s--%s--%s" % (doc_type, i, hit.name))
