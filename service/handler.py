@@ -57,7 +57,7 @@ def hospital(doc_type):
     s = Search(using=client, index="hospital-*")
     s = s.query('match', document_type=doc_type)
     i = 0
-    for hit in s.scan():
+    for hit in s.scan(size=500, raise_on_error=False):
         i += 1
         print("%s--%s--%s" % (doc_type, i, hit.hospitalName))
         h = Hospital.nodes.get_or_none(hid=hit.document_id)
@@ -116,7 +116,7 @@ def doctor(doc_type):
     s = s.query('match', document_type=doc_type)
 #  hits = s.execute()
     i = 0
-    for hit in s.scan():
+    for hit in s.scan(size=500, raise_on_error=False):
         i += 1
         print("%s--%s--%s" % (doc_type, i, hit.name))
         d = Doctor.nodes.get_or_none(did=hit.document_id)
