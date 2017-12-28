@@ -55,8 +55,8 @@ def clis():
 @click.command()
 @click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
 def hospital(doc_types):
-    start, limit, i, err = 0, 500, 0, 0
     for doc_type in doc_types:
+        start, limit, i, err = 0, 500, 0, 0
         while True:
             try:
                 s = Search(using=client, index="hospital-%s" % doc_type).sort()
@@ -126,8 +126,8 @@ def hospital(doc_types):
 @click.command()
 @click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
 def doctor(doc_types):
-    start, limit, i, err = 0, 500, 0, 0
     for doc_type in doc_types:
+        start, limit, i, err = 0, 500, 0, 0
         while True:
             try:
                 s = Search(using=client, index="doctor-%s" % doc_type).sort()
