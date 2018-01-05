@@ -11,7 +11,7 @@ def cleanHopsitalName():
 
     for hos in Hospital.nodes:
         name = hos.name
-        print name
+        print("%s-%s" % (hos.sourceType, name))
         ns = re.sub(pattern, " ", name)
         nss = ns.split(' ')
         hos.name = nss[0]
