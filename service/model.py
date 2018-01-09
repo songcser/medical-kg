@@ -40,6 +40,7 @@ class Hospital(StructuredNode):
     hid = UniqueIdProperty()
     name = StringProperty()
     nickName = StringProperty()
+    fullName = StringProperty()
     hType = StringProperty()
     description = StringProperty()
     managementMode = StringProperty()

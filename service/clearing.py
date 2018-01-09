@@ -14,6 +14,7 @@ def cleanHopsitalName():
         print("%s-%s" % (hos.sourceType, name))
         ns = re.sub(pattern, " ", name)
         nss = ns.split(' ')
+        hos.fullName = name
         hos.name = nss[0]
         hos.nickName = ",".join(nss[1:])
         hos.save()
