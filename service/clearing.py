@@ -6,15 +6,14 @@ from model import Hospital
 handlers = ['name', 'coordinate']
 
 def cleanHopsitalName():
-    pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+")
-    #  string = re.sub("[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'"," ",line)
+    #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+")
+    pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
 
     for hos in Hospital.nodes:
-        name = hos.name
+        name = hos.fullName
         print("%s-%s" % (hos.sourceType, name))
         ns = re.sub(pattern, " ", name)
         nss = ns.split(' ')
-        hos.fullName = name
         hos.name = nss[0]
         hos.nickName = ",".join(nss[1:])
         hos.save()
