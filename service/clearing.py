@@ -1,7 +1,7 @@
 import click
 import re
 
-from model import Hospital
+from model import Hospital, SOURCETYPE
 
 handlers = ['name', 'coordinate']
 
@@ -9,14 +9,15 @@ def cleanHopsitalName():
     #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+")
     pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
 
-    for hos in Hospital.nodes:
-        name = hos.fullName
-        print("%s-%s" % (hos.sourceType, name))
-        ns = re.sub(pattern, " ", name)
-        nss = ns.split(' ')
-        hos.name = nss[0]
-        hos.nickName = ",".join(nss[1:])
-        hos.save()
+    for docs in SOURCETYPE:
+        for hos in Hospital.nodes.filter(sourceType=docs[0]):
+            name = hos.fullName
+            print("%s-%s" % (hos.sourceType, name))
+            ns = re.sub(pattern, " ", name)
+            nss = ns.split(' ')
+            hos.name = nss[0]
+            hos.nickName = ",".join(nss[1:])
+            hos.save()
 
 
 def cleanHospitalCoordinate():

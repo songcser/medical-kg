@@ -3,12 +3,12 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch_dsl import Search
 from model import Hospital, Doctor, Province, City, District, \
-    HospitalSimilarity, Department, HosDocRel, DoctorSimilarity
+    HospitalSimilarity, Department, HosDocRel, DoctorSimilarity \
+    SOURCETYPE
 
 client = Elasticsearch('192.168.2.20:9200')
 
-docs = ['qqyy', 'cnkang', 'yyk99', 'xywy', 'xsjk', 'familydoctor', 'haodf',
-        'guahaowang']
+docs = [doc[0] for doc in SOURCETYPE]
 
 def get_province(province):
     if not province:
