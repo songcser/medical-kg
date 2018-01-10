@@ -7,16 +7,17 @@ handlers = ['name', 'coordinate']
 
 def cleanHopsitalName():
     #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+")
-    pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
+    #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
+    pattern = re.compile(r"（(.+)）|\((.+)\)")
 
     for docs in SOURCETYPE:
         for hos in Hospital.nodes.filter(sourceType=docs[0]):
             name = hos.fullName
             print("%s-%s" % (hos.sourceType, name))
-            ns = re.sub(pattern, " ", name)
-            nss = ns.split(' ')
-            hos.name = nss[0]
-            hos.nickName = ",".join(nss[1:])
+            ns = pattern.sub("", name)
+            nss = pattern.findall(pattern)
+            hos.name = ns
+            hos.nickName = ",".join(nss)
             hos.save()
 
 def cleanHospitalCoordinate():
