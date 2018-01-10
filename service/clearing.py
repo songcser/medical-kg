@@ -16,8 +16,11 @@ def cleanHopsitalName():
             print("%s-%s" % (hos.sourceType, name))
             ns = pattern.sub("", name)
             nss = pattern.findall(name)
+            print(ns)
+            print(nss)
             hos.name = ns
-            hos.nickName = ",".join(nss)
+            if nss:
+                hos.nickName = ",".join([ls for lss in nss for ls in lss if ls])
             hos.save()
 
 def cleanHospitalCoordinate():
