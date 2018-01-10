@@ -39,7 +39,7 @@ def cleanHospitalCoordinate():
 def cleanHospital(handler):
     hs = handler if handler else handlers
     if 'check' in hs:
-        cleckHospitalName()
+        checkHospitalName()
     if 'name' in hs:
         cleanHopsitalName()
     if 'coordinate' in hs:
