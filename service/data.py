@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from elasticsearch_dsl import Search
 from model import Hospital, Doctor, Province, City, District, \
-    HospitalSimilarity, Department, HosDocRel, DoctorSimilarity \
+    HospitalSimilarity, Department, HosDocRel, DoctorSimilarity, \
     SOURCETYPE
 
 client = Elasticsearch('192.168.2.20:9200')

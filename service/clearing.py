@@ -19,7 +19,6 @@ def cleanHopsitalName():
             hos.nickName = ",".join(nss[1:])
             hos.save()
 
-
 def cleanHospitalCoordinate():
     pass
 
