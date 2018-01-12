@@ -13,6 +13,7 @@ def checkHospitalName():
             nss = pattern.findall(name)
             if nss:
                 print(name)
+                print(hos.fullName)
 
 
 def cleanHopsitalName():
