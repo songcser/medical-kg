@@ -9,7 +9,7 @@ def checkHospitalName():
     pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
     for docs in SOURCETYPE:
         for hos in Hospital.nodes.filter(sourceType=docs[0]):
-            name = hos.fullName
+            name = hos.name
             nss = pattern.findall(name)
             if nss:
                 print(name)
