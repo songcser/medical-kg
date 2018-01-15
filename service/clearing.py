@@ -17,8 +17,6 @@ def checkHospitalName():
 
 
 def cleanHopsitalName():
-    #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+")
-    #  pattern = re.compile(r"[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+'")
     pattern = re.compile(r"（(.+)）|\((.+)\)")
 
     for docs in SOURCETYPE:

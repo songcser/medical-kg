@@ -65,14 +65,32 @@ def hospital(doc_types):
                     i += 1
                     print("%s--%s--%s" % (doc_type, i, hit.hospitalName))
                     h = Hospital.nodes.get_or_none(hid=hit.document_id)
-                    if h: continue
                     data = hit.to_dict()
+                    if h:
+                        h.name = data['hospitalName'].strip()
+                        h.hType = data.get('hospitalType', None)
+                        h.description = data.get('description', None)
+                        h.managementMode = data.get('managementMode', None)
+                        h.sourceUrl = data.get('source_url', None)
+                        h.sourceType = data.get('document_type', None)
+                        h.street = data.get('street', None)
+                        h.place = data.get('place', None)
+                        h.email = data.get('email', None)
+                        h.direction = data.get('direction', None)
+                        h.website = data.get('website', None)
+                        h.level = data.get('level', None)
+                        h.adcode = data.get('adcode', None)
+                        h.streetNumber = data.get('streetNumber', None)
+                        h.medicalInsurance = data.get('medicalInsurance', None)
+                        h.telephone = data.get('telephone', None)
+                        h.save()
+                        continue
                     province = get_province(data.get('province', None))
                     city = get_city(data.get('city', None), province)
                     district = get_district(data.get('district', None), city)
                     h = Hospital(
                         hid=data['document_id'],
-                        name=data['hospitalName'],
+                        name=data['hospitalName'].strip(),
                         hType=data.get('hospitalType', None),
                         description=data['description'],
                         managementMode=data.get('managementMode', None),
