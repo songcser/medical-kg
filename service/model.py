@@ -1,6 +1,6 @@
 from neomodel import (config, StructuredNode, StringProperty, IntegerProperty,
-    UniqueIdProperty, RelationshipTo, RelationshipFrom, FloatProperty,
-                      StructuredRel, ArrayProperty, Relationship)
+        UniqueIdProperty, RelationshipTo, RelationshipFrom, FloatProperty,
+        StructuredRel, ArrayProperty, Relationship, JSONProperty)
 
 config.DATABASE_URL = 'bolt://neo4j:admin@neo4j:7687'
 SOURCETYPE = (
@@ -60,9 +60,16 @@ class Hospital(StructuredNode):
     telephone = StringProperty()
     longitude = FloatProperty()
     latitude = FloatProperty()
+    baiduCoordinate = JSONProperty()
+    gaodeCoordinate = JSONProperty()
     aimilarity = Relationship('Hospital', "HospitalAimilarity",
                                 model=HospitalSimilarity)
     departments = Relationship('Department', "HospitalDepartmentRel")
+
+    def getCity(self):
+        query = "MATCH (a) WHERE id(a)={self}MATCH (a)-[:HospitalCityRel]->(b) RETURN b"
+        results, columns = self.cypher(query)
+        return City().inflate(results[0][0]) if results else None
 
 class Department(StructuredNode):
     name = StringProperty()

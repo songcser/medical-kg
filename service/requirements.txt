@@ -1,3 +1,4 @@
 neomodel==3.2.5
 elasticsearch-dsl==5.4.0
 click==6.7
+git+https://github.com/songcser/geopy.git@master

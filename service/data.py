@@ -10,7 +10,7 @@ client = Elasticsearch('192.168.2.20:9200')
 
 docs = [doc[0] for doc in SOURCETYPE]
 
-def get_province(province):
+def getProvince(province):
     if not province:
         return None
     p = Province.nodes.get_or_none(name=province)
@@ -18,7 +18,7 @@ def get_province(province):
         p = Province(name=province).save()
     return p
 
-def get_city(city, province):
+def getCity(city, province):
     if not city:
         return None
     c = City.nodes.get_or_none(name=city)
@@ -29,7 +29,7 @@ def get_city(city, province):
     c.save()
     return c
 
-def get_district(district, city):
+def getDistrict(district, city):
     if not district:
         return None
     d = District.nodes.get_or_none(name=district)
@@ -40,7 +40,7 @@ def get_district(district, city):
     d.save()
     return d
 
-def get_department(dep):
+def getDepartment(dep):
     if not dep:
         return None
     d = Department.nodes.get_or_none(name=dep)
@@ -49,9 +49,9 @@ def get_department(dep):
     return d
 
 @click.command()
-@click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
-def hospital(doc_types):
-    for doc_type in doc_types:
+@click.option('--doc', '-d', type=click.Choice(docs), multiple=True)
+def hospital(doc):
+    for doc_type in doc:
         start, limit, i, err = 0, 500, 0, 0
         while True:
             try:
@@ -63,9 +63,12 @@ def hospital(doc_types):
                     break
                 for hit in res:
                     i += 1
-                    print("%s--%s--%s" % (doc_type, i, hit.hospitalName))
+                    print("%s--%s--%s--%s" % (doc_type, i, hit.city, hit.hospitalName))
                     h = Hospital.nodes.get_or_none(hid=hit.document_id)
                     data = hit.to_dict()
+                    province = getProvince(data.get('province', None))
+                    city = getCity(data.get('city', None), province)
+                    district = getDistrict(data.get('district', None), city)
                     if h:
                         h.name = data['hospitalName'].strip()
                         h.hType = data.get('hospitalType', None)
@@ -85,31 +88,29 @@ def hospital(doc_types):
                         h.telephone = data.get('telephone', None)
                         h.save()
                         continue
-                    province = get_province(data.get('province', None))
-                    city = get_city(data.get('city', None), province)
-                    district = get_district(data.get('district', None), city)
-                    h = Hospital(
-                        hid=data['document_id'],
-                        name=data['hospitalName'].strip(),
-                        hType=data.get('hospitalType', None),
-                        description=data['description'],
-                        managementMode=data.get('managementMode', None),
-                        sourceUrl=data.get('source_url', None),
-                        sourceType=data.get('document_type', None),
-                        #  province=data.get('province', None),
-                        #  city=data.get('city', None),
-                        #  district=data.get('district', None),
-                        street=data.get('street', None),
-                        place=data.get('place', None),
-                        email=data.get('email', None),
-                        direction=data.get('direction', None),
-                        website=data.get('website', None),
-                        level=data.get('level', None),
-                        adcode=data.get('adcode', None),
-                        streetNumber=data.get('streetNumber', None),
-                        medicalInsurance=data.get('medicalInsurance', None),
-                        telephone=data.get('telephone', None),
-                    ).save()
+                    else:
+                        h = Hospital(
+                            hid=data['document_id'],
+                            name=data['hospitalName'].strip(),
+                            hType=data.get('hospitalType', None),
+                            description=data['description'],
+                            managementMode=data.get('managementMode', None),
+                            sourceUrl=data.get('source_url', None),
+                            sourceType=data.get('document_type', None),
+                            #  province=data.get('province', None),
+                            #  city=data.get('city', None),
+                            #  district=data.get('district', None),
+                            street=data.get('street', None),
+                            place=data.get('place', None),
+                            email=data.get('email', None),
+                            direction=data.get('direction', None),
+                            website=data.get('website', None),
+                            level=data.get('level', None),
+                            adcode=data.get('adcode', None),
+                            streetNumber=data.get('streetNumber', None),
+                            medicalInsurance=data.get('medicalInsurance', None),
+                            telephone=data.get('telephone', None),
+                        ).save()
                     if province:
                         h.province.connect(province)
                     if city:
@@ -124,7 +125,7 @@ def hospital(doc_types):
                         if not deps:
                             continue
                         for dep in deps:
-                            d = get_department(dep['name'])
+                            d = getDepartment(dep['name'])
                             if not d:
                                 continue
                             h.departments.connect(d)
@@ -139,9 +140,9 @@ def hospital(doc_types):
 
 
 @click.command()
-@click.option('--doc_types', '-d', type=click.Choice(docs), multiple=True)
-def doctor(doc_types):
-    for doc_type in doc_types:
+@click.option('--doc', '-d', type=click.Choice(docs), multiple=True)
+def doctor(doc):
+    for doc_type in doc:
         start, limit, i, err = 0, 500, 0, 0
         while True:
             try:
@@ -181,11 +182,11 @@ def doctor(doc_types):
                                 'department': ','.join(h['departments'])
                             })
                     if deps:
-                        department = get_department(deps[0])
+                        department = getDepartment(deps[0])
                         if department:
                             d.department.connect(department)
-                    province = get_province(data.get('province', None))
-                    city = get_city(data.get('city', None), province)
+                    province = getProvince(data.get('province', None))
+                    city = getCity(data.get('city', None), province)
                     if province:
                         d.province.connect(province)
                     if city:
