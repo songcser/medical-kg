@@ -28,7 +28,7 @@ def cleanHopsitalName(docs):
 
     for doc in docs or sourceType:
         for hos in Hospital.nodes.filter(sourceType=doc):
-            name = hos.fullName
+            name = hos.fullName if hos.fullName else hos.name
             print("%s-%s" % (hos.sourceType, name))
             ns = pattern.sub("", name)
             nss = pattern.findall(name)
