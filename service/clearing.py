@@ -20,8 +20,7 @@ def checkHospitalName(docs):
             name = hos.name
             nss = pattern.findall(name)
             if nss:
-                print(name)
-                print(hos.fullName)
+                print('%s--%s--%s' % doc, hos.name, hos.fullName)
 
 
 def cleanHopsitalName(docs):
