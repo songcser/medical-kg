@@ -69,48 +69,26 @@ def hospital(doc):
                     province = getProvince(data.get('province', None))
                     city = getCity(data.get('city', None), province)
                     district = getDistrict(data.get('district', None), city)
-                    if h:
-                        h.name = data['hospitalName'].strip()
-                        h.hType = data.get('hospitalType', None)
-                        h.description = data.get('description', None)
-                        h.managementMode = data.get('managementMode', None)
-                        h.sourceUrl = data.get('source_url', None)
-                        h.sourceType = data.get('document_type', None)
-                        h.street = data.get('street', None)
-                        h.place = data.get('place', None)
-                        h.email = data.get('email', None)
-                        h.direction = data.get('direction', None)
-                        h.website = data.get('website', None)
-                        h.level = data.get('level', None)
-                        h.adcode = data.get('adcode', None)
-                        h.streetNumber = data.get('streetNumber', None)
-                        h.medicalInsurance = data.get('medicalInsurance', None)
-                        h.telephone = data.get('telephone', None)
-                        h.save()
-                        continue
-                    else:
-                        h = Hospital(
-                            hid=data['document_id'],
-                            name=data['hospitalName'].strip(),
-                            hType=data.get('hospitalType', None),
-                            description=data['description'],
-                            managementMode=data.get('managementMode', None),
-                            sourceUrl=data.get('source_url', None),
-                            sourceType=data.get('document_type', None),
-                            #  province=data.get('province', None),
-                            #  city=data.get('city', None),
-                            #  district=data.get('district', None),
-                            street=data.get('street', None),
-                            place=data.get('place', None),
-                            email=data.get('email', None),
-                            direction=data.get('direction', None),
-                            website=data.get('website', None),
-                            level=data.get('level', None),
-                            adcode=data.get('adcode', None),
-                            streetNumber=data.get('streetNumber', None),
-                            medicalInsurance=data.get('medicalInsurance', None),
-                            telephone=data.get('telephone', None),
-                        ).save()
+                    if not h:
+                        h = Hospital()
+                    h.name = data['hospitalName'].strip()
+                    h.fullName = data['hospitalName'].strip()
+                    h.hType = data.get('hospitalType', None)
+                    h.description = data.get('description', None)
+                    h.managementMode = data.get('managementMode', None)
+                    h.sourceUrl = data.get('source_url', None)
+                    h.sourceType = data.get('document_type', None)
+                    h.street = data.get('street', None)
+                    h.place = data.get('place', None)
+                    h.email = data.get('email', None)
+                    h.direction = data.get('direction', None)
+                    h.website = data.get('website', None)
+                    h.level = data.get('level', None)
+                    h.adcode = data.get('adcode', None)
+                    h.streetNumber = data.get('streetNumber', None)
+                    h.medicalInsurance = data.get('medicalInsurance', None)
+                    h.telephone = data.get('telephone', None)
+                    h.save()
                     if province:
                         h.province.connect(province)
                     if city:
