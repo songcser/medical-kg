@@ -24,15 +24,17 @@ def checkHospitalName(docs):
 
 
 def cleanHopsitalName(docs):
-    pattern = re.compile(r"（(.+)）|\((.+)\)")
+    pattern = re.compile(r"（(.*)）|\((.*)\)| (.+)|/(.+)|\((.*)|（(.*))")
 
     for doc in docs or sourceType:
         for hos in Hospital.nodes.filter(sourceType=doc):
             name = hos.fullName if hos.fullName else hos.name
+            name = name.strip()
             print("%s-%s" % (hos.sourceType, name))
             ns = pattern.sub("", name)
             nss = pattern.findall(name)
             hos.name = ns
+            hos.fullName = name
             if nss:
                 hos.nickName = ",".join([ls for lss in nss for ls in lss if ls])
             hos.save()
