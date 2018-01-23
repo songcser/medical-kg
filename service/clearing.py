@@ -28,8 +28,8 @@ def cleanHopsitalName(docs):
 
     for doc in docs or sourceType:
         for hos in Hospital.nodes.filter(sourceType=doc):
-            #  name = hos.fullName if hos.fullName else hos.name
-            name = hos.name
+            name = hos.fullName if hos.fullName else hos.name
+            #  name = hos.name
             name = name.strip()
             print("%s-%s" % (hos.sourceType, name))
             ns = pattern.sub("", name)
@@ -62,6 +62,8 @@ def getBaiduGeo(address, city=None):
 
 
 def getBaiduCoordinate(hos):
+    if hos.baiduCoordinate:
+        return
     city = hos.getCity()
     print("Baidu: %s %s %s" % (hos.id, city.name, hos.name))
     g = getBaiduGeo(hos.name, city.name)
@@ -78,16 +80,24 @@ def getBaiduCoordinate(hos):
     print("Baidu -> %s" % hos.baiduCoordinate)
 
 def getGaodeSearch(address, city=None):
-    info = gaode.search(address, city=city, timeout=5)
-    return info
+    try:
+        info = gaode.search(address, city=city, timeout=5)
+        return info
+    except:
+        return None
 
 
 def getGaodeGeo(address, city=None):
-    info = gaode.geocode(address, city=city, timeout=5)
-    return info
+    try:
+        info = gaode.geocode(address, city=city, timeout=5)
+        return info
+    except:
+        return None
 
 
 def getGaodeCoordinate(hos):
+    if hos.gaodeCoordinate:
+        return
     city = hos.getCity()
     print("Gaode: %s %s" % (city.name, hos.name))
     g = getGaodeGeo(hos.name, city.name)
