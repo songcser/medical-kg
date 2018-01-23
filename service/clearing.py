@@ -20,11 +20,11 @@ def checkHospitalName(docs):
             name = hos.name
             nss = pattern.findall(name)
             if nss:
-                print('%s--%s--%s' % (doc, hos.name, hos.fullName))
+                print('%s--%s--%s--%s' % (doc, hos.name, hos.fullName, hos.nickName))
 
 
 def cleanHopsitalName(docs):
-    pattern = re.compile(r"（(.*)）|\((.*)\)| (.+)|/(.+)|\((.*)|（(.*)\)")
+    pattern = re.compile(r"（(.*?)）|\((.*?)\)| (.+?)|/(.+?)|\((.*?)|（(.*?)\)|,(.*?)|,(.*)|\.(.*)")
 
     for doc in docs or sourceType:
         for hos in Hospital.nodes.filter(sourceType=doc):
