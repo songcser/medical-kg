@@ -24,7 +24,7 @@ def checkHospitalName(docs):
 
 
 def cleanHopsitalName(docs):
-    pattern = re.compile(r"（(.*)）|\((.*)\)| (.+)|/(.+)|\((.*)|（(.*))")
+    pattern = re.compile(r"（(.*)）|\((.*)\)| (.+)|/(.+)|\((.*)|（(.*)\)")
 
     for doc in docs or sourceType:
         for hos in Hospital.nodes.filter(sourceType=doc):
