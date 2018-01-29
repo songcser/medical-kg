@@ -65,7 +65,7 @@ def getBaiduCoordinate(hos):
     if hos.baiduCoordinate:
         return
     city = hos.getCity()
-    print("Baidu: %s %s %s" % (hos.id, city.name, hos.name))
+    print("Baidu: %s %s %s %s" % (hos.sourceType, hos.id, city.name, hos.name))
     g = getBaiduGeo(hos.name, city.name)
     s = getBaiduSearch(hos.name, city.name)
     d = distance((s.latitude, s.longitude),
@@ -99,7 +99,7 @@ def getGaodeCoordinate(hos):
     if hos.gaodeCoordinate:
         return
     city = hos.getCity()
-    print("Gaode: %s %s" % (city.name, hos.name))
+    print("Gaode: %s %s %s %s" % (hos.sourceType, hos.sourceType, city.name, hos.name))
     g = getGaodeGeo(hos.name, city.name)
     s = getGaodeSearch(hos.name, city.name)
     d = distance((s.latitude, s.longitude),
@@ -116,7 +116,9 @@ def getGaodeCoordinate(hos):
 
 def cleanHospitalCoordinate(docs):
     for doc in docs or sourceType:
-        for hos in Hospital.nodes.filter(sourceType=doc):
+        for hos in Hospital.nodes.filter(sourceType=doc,
+                                         baiduCoordinate__isnull=True,
+                                         gaodeCoordinate__isnull=True):
             getBaiduCoordinate(hos)
             getGaodeCoordinate(hos)
             hos.save()
